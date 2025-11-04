@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Tester - DataInsight</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #667eea;
+            margin-bottom: 30px;
+        }
+        .section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        .section h2 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin: 5px;
+            transition: all 0.3s;
+        }
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        .btn-success:hover {
+            background: #218838;
+        }
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        .response {
+            background: #263238;
+            color: #aed581;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        input[type="text"],
+        input[type="number"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        .form-group {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        .loading {
+            display: none;
+            color: #667eea;
+            font-style: italic;
+            margin: 10px 0;
+        }
+        .error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .success {
+            color: #28a745;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 API Interactive Tester</h1>
+
+        <!-- GET Clients -->
+        <div class="section">
+            <h2>GET /api/clients</h2>
+            <p>Récupérer tous les clients</p>
+            <button class="btn btn-primary" onclick="getClients()">Tester</button>
+            <div class="loading" id="loading1">Chargement...</div>
+            <div class="response" id="response1"></div>
+        </div>
+
+        <!-- GET Client by ID -->
+        <div class="section">
+            <h2>GET /api/clients/{id}</h2>
+            <p>Récupérer un client spécifique</p>
+            <div class="form-group">
+                <label>ID du client:</label>
+                <input type="number" id="clientId" placeholder="1" value="1">
+            </div>
+            <button class="btn btn-primary" onclick="getClientById()">Tester</button>
+            <div class="loading" id="loading2">Chargement...</div>
+            <div class="response" id="response2"></div>
+        </div>
+
+        <!-- POST Create Client -->
+        <div class="section">
+            <h2>POST /api/clients</h2>
+            <p>Créer un nouveau client</p>
+            <div class="form-group">
+                <label>Nom:</label>
+                <input type="text" id="createNom" placeholder="Dupont">
+            </div>
+            <div class="form-group">
+                <label>Prénom:</label>
+                <input type="text" id="createPrenom" placeholder="Jean">
+            </div>
+            <div class="form-group">
+                <label>Pays:</label>
+                <select id="createPays">
+                    <option value="Maroc">Maroc</option>
+                    <option value="France">France</option>
+                    <option value="Canada">Canada</option>
+                    <option value="Espagne">Espagne</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Âge:</label>
+                <input type="number" id="createAge" placeholder="30" value="30">
+            </div>
+            <div class="form-group">
+                <label>Profession:</label>
+                <input type="text" id="createProfession" placeholder="Ingénieur">
+            </div>
+            <button class="btn btn-success" onclick="createClient()">Créer</button>
+            <div class="loading" id="loading3">Chargement...</div>
+            <div class="response" id="response3"></div>
+        </div>
+
+        <!-- GET Transactions -->
+        <div class="section">
+            <h2>GET /api/transactions</h2>
+            <p>Récupérer les transactions récentes</p>
+            <div class="form-group">
+                <label>Limite:</label>
+                <input type="number" id="txLimit" placeholder="10" value="10">
+            </div>
+            <button class="btn btn-primary" onclick="getTransactions()">Tester</button>
+            <div class="loading" id="loading4">Chargement...</div>
+            <div class="response" id="response4"></div>
+        </div>
+
+        <!-- POST Create Transaction -->
+        <div class="section">
+            <h2>POST /api/transactions</h2>
+            <p>Créer une nouvelle transaction</p>
+            <div class="form-group">
+                <label>ID Client:</label>
+                <input type="number" id="txClientId" placeholder="1" value="1">
+            </div>
+            <div class="form-group">
+                <label>Date (YYYY-MM-DD):</label>
+                <input type="text" id="txDate" placeholder="2025-11-03" value="2025-11-03">
+            </div>
+            <div class="form-group">
+                <label>Montant:</label>
+                <input type="number" id="txMontant" placeholder="150.50" value="150.50" step="0.01">
+            </div>
+            <div class="form-group">
+                <label>Catégorie:</label>
+                <select id="txCategorie">
+                    <option value="Informatique">Informatique</option>
+                    <option value="Santé">Santé</option>
+                    <option value="Éducation">Éducation</option>
+                    <option value="Voyage">Voyage</option>
+                    <option value="Alimentation">Alimentation</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Description:</label>
+                <input type="text" id="txDescription" placeholder="Test transaction">
+            </div>
+            <button class="btn btn-success" onclick="createTransaction()">Créer</button>
+            <div class="loading" id="loading5">Chargement...</div>
+            <div class="response" id="response5"></div>
+        </div>
+
+        <!-- GET Stats Overview -->
+        <div class="section">
+            <h2>GET /api/stats/overview</h2>
+            <p>Statistiques globales</p>
+            <button class="btn btn-primary" onclick="getStatsOverview()">Tester</button>
+            <div class="loading" id="loading6">Chargement...</div>
+            <div class="response" id="response6"></div>
+        </div>
+
+        <!-- GET Revenue by Country -->
+        <div class="section">
+            <h2>GET /api/stats/revenue-by-country</h2>
+            <p>Revenu agrégé par pays</p>
+            <button class="btn btn-primary" onclick="getRevenueByCountry()">Tester</button>
+            <div class="loading" id="loading7">Chargement...</div>
+            <div class="response" id="response7"></div>
+        </div>
+
+        <!-- GET Top Clients -->
+        <div class="section">
+            <h2>GET /api/stats/top-clients</h2>
+            <p>Top clients par dépense</p>
+            <div class="form-group">
+                <label>Limite:</label>
+                <input type="number" id="topLimit" placeholder="5" value="5">
+            </div>
+            <button class="btn btn-primary" onclick="getTopClients()">Tester</button>
+            <div class="loading" id="loading8">Chargement...</div>
+            <div class="response" id="response8"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.origin + window.location.pathname.replace('api-test.html', 'api');
+
+        // Helper function to make API calls
+        async function apiCall(endpoint, method = 'GET', body = null, responseId, loadingId) {
+            const loadingEl = document.getElementById(loadingId);
+            const responseEl = document.getElementById(responseId);
+            
+            loadingEl.style.display = 'block';
+            responseEl.textContent = '';
+
+            try {
+                const options = {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                };
+
+                if (body) {
+                    options.body = JSON.stringify(body);
+                }
+
+                const response = await fetch(API_BASE + endpoint, options);
+                const data = await response.json();
+
+                responseEl.textContent = JSON.stringify(data, null, 2);
+                responseEl.className = 'response ' + (data.success ? 'success' : 'error');
+
+            } catch (error) {
+                responseEl.textContent = 'Error: ' + error.message;
+                responseEl.className = 'response error';
+            } finally {
+                loadingEl.style.display = 'none';
+            }
+        }
+
+        // API Test Functions
+        function getClients() {
+            apiCall('/clients', 'GET', null, 'response1', 'loading1');
+        }
+
+        function getClientById() {
+            const id = document.getElementById('clientId').value;
+            apiCall('/clients/' + id, 'GET', null, 'response2', 'loading2');
+        }
+
+        function createClient() {
+            const body = {
+                nom: document.getElementById('createNom').value,
+                prenom: document.getElementById('createPrenom').value,
+                pays: document.getElementById('createPays').value,
+                age: parseInt(document.getElementById('createAge').value),
+                profession: document.getElementById('createProfession').value
+            };
+            apiCall('/clients', 'POST', body, 'response3', 'loading3');
+        }
+
+        function getTransactions() {
+            const limit = document.getElementById('txLimit').value;
+            apiCall('/transactions?limit=' + limit, 'GET', null, 'response4', 'loading4');
+        }
+
+        function createTransaction() {
+            const body = {
+                clientId: parseInt(document.getElementById('txClientId').value),
+                date: document.getElementById('txDate').value,
+                montant: parseFloat(document.getElementById('txMontant').value),
+                categorie: document.getElementById('txCategorie').value,
+                description: document.getElementById('txDescription').value,
+                modePaiement: 'carte'
+            };
+            apiCall('/transactions', 'POST', body, 'response5', 'loading5');
+        }
+
+        function getStatsOverview() {
+            apiCall('/stats/overview', 'GET', null, 'response6', 'loading6');
+        }
+
+        function getRevenueByCountry() {
+            apiCall('/stats/revenue-by-country', 'GET', null, 'response7', 'loading7');
+        }
+
+        function getTopClients() {
+            const limit = document.getElementById('topLimit').value;
+            apiCall('/stats/top-clients?limit=' + limit, 'GET', null, 'response8', 'loading8');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence
+                                 https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
+             version="3.0">
+
+    <persistence-unit name="datainsightPU" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+
+        <!-- Entities -->
+        <class>com.datainsight.model.Client</class>
+        <class>com.datainsight.model.Transaction</class>
+
+        <properties>
+    <!-- ======================== DATABASE ======================== -->
+    <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
+    <property name="jakarta.persistence.jdbc.url"
+              value="jdbc:mysql://127.0.0.1:3307/datainsight?useSSL=false&amp;allowPublicKeyRetrieval=true&amp;serverTimezone=UTC"/>
+    <property name="jakarta.persistence.jdbc.user" value="root"/>
+    <property name="jakarta.persistence.jdbc.password" value="Oumama123"/>
+
+    <!-- 💡 This property forces the driver to use the modern plugin -->
+    <property name="hibernate.connection.authenticationPlugin" 
+              value="com.mysql.cj.protocol.a.authentication.CachingSha2PasswordPlugin"/>
+
+    <!-- ======================== HIBERNATE ======================== -->
+    <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
+    <property name="hibernate.hbm2ddl.auto" value="update"/>
+    <property name="hibernate.show_sql" value="true"/>
+    <property name="hibernate.format_sql" value="true"/>
+
+    <!-- ======================== HIKARI CONNECTION POOL ======================== -->
+    <property name="hibernate.connection.provider_class" value="org.hibernate.hikaricp.internal.HikariCPConnectionProvider"/>
+    <property name="hibernate.hikari.minimumIdle" value="3"/>
+    <property name="hibernate.hikari.maximumPoolSize" value="15"/>
+    <property name="hibernate.hikari.connectionTimeout" value="20000"/>
+    <property name="hibernate.hikari.poolName" value="DataInsightRootPool"/>
+
+    <!-- ======================== PERFORMANCE ======================== -->
+    <property name="hibernate.jdbc.batch_size" value="50"/>
+    <property name="hibernate.order_inserts" value="true"/>
+    <property name="hibernate.order_updates" value="true"/>
+</properties>
+
+    </persistence-unit>
+</persistence>
